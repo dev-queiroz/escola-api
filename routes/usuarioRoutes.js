@@ -2,11 +2,15 @@ const express = require("express");
 const {
   loginUsuario,
   registrarUsuario,
+  atualizarUsuario,
+  deletarUsuario,
 } = require("../controllers/usuarioController");
+const authMiddleware = require("../middlewares/authMiddleware");
 const router = express.Router();
 
-// Rotas de Usuários
-router.post("/login", loginUsuario); // Rota de login não requer autenticação
+router.post("/login", loginUsuario);
 router.post("/registro", registrarUsuario);
+router.put("/:id", authMiddleware, atualizarUsuario);
+router.delete("/:id", authMiddleware, deletarUsuario);
 
 module.exports = router;

@@ -1,16 +1,13 @@
 const supabase = require("../config/db");
 const enviarEmail = require("../utils/email");
 
-// Adicionar Nota
 const adicionarNota = async (req, res) => {
   const { aluno_id, materia, nota, tipo } = req.body;
 
-  // Verificar se o usuário é professor
   if (req.user.papel !== "professor") {
     return res.status(403).json({ error: "Permissão negada." });
   }
 
-  // Validação
   if (!aluno_id || !materia || nota === undefined || !tipo) {
     return res.status(400).json({ error: "Todos os campos são obrigatórios." });
   }
@@ -24,7 +21,6 @@ const adicionarNota = async (req, res) => {
   } else {
     res.status(201).json({ message: "Nota adicionada com sucesso." });
 
-    // Envio de e-mail para o pai
     const { data: aluno } = await supabase
       .from("alunos")
       .select("usuario_id")
@@ -45,7 +41,6 @@ const adicionarNota = async (req, res) => {
   }
 };
 
-// Listar Notas do Aluno
 const listarNotas = async (req, res) => {
   const { aluno_id } = req.params;
 
@@ -61,4 +56,36 @@ const listarNotas = async (req, res) => {
   res.json(notas);
 };
 
-module.exports = { adicionarNota, listarNotas };
+const atualizarNota = async (req, res) => {
+  const { id } = req.params;
+  const { materia, nota, tipo } = req.body;
+
+  if (!materia || nota === undefined || !tipo) {
+    return res.status(400).json({ error: "Todos os campos são obrigatórios." });
+  }
+
+  const { error } = await supabase
+    .from("notas")
+    .update({ materia, nota, tipo })
+    .eq("id", id);
+
+  if (error) {
+    return res.status(400).json({ error: "Erro ao atualizar nota." });
+  }
+
+  res.status(200).json({ message: "Nota atualizada com sucesso." });
+};
+
+const deletarNota = async (req, res) => {
+  const { id } = req.params;
+
+  const { error } = await supabase.from("notas").delete().eq("id", id);
+
+  if (error) {
+    return res.status(400).json({ error: "Erro ao deletar nota." });
+  }
+
+  res.status(200).json({ message: "Nota deletada com sucesso." });
+};
+
+module.exports = { adicionarNota, listarNotas, atualizarNota, deletarNota };

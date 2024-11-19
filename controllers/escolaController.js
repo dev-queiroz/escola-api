@@ -1,10 +1,8 @@
 const supabase = require("../config/db");
 
-// Criar nova escola
 const criarEscola = async (req, res) => {
   const { nome, endereco, plano } = req.body;
 
-  // Validação
   if (!nome || !endereco || !plano) {
     return res.status(400).json({ error: "Todos os campos são obrigatórios." });
   }
@@ -26,7 +24,6 @@ const criarEscola = async (req, res) => {
   res.status(201).json({ message: "Escola criada com sucesso." });
 };
 
-// Listar escolas
 const listarEscolas = async (req, res) => {
   const { data: escolas, error } = await supabase.from("escolas").select("*");
 
@@ -37,4 +34,36 @@ const listarEscolas = async (req, res) => {
   res.json(escolas);
 };
 
-module.exports = { criarEscola, listarEscolas };
+const atualizarEscola = async (req, res) => {
+  const { id } = req.params;
+  const { nome, endereco, plano } = req.body;
+
+  if (!nome || !endereco || !plano) {
+    return res.status(400).json({ error: "Todos os campos são obrigatórios." });
+  }
+
+  const { error } = await supabase
+    .from("escolas")
+    .update({ nome, endereco, plano })
+    .eq("id", id);
+
+  if (error) {
+    return res.status(400).json({ error: "Erro ao atualizar escola." });
+  }
+
+  res.status(200).json({ message: "Escola atualizada com sucesso." });
+};
+
+const deletarEscola = async (req, res) => {
+  const { id } = req.params;
+
+  const { error } = await supabase.from("escolas").delete().eq("id", id);
+
+  if (error) {
+    return res.status(400).json({ error: "Erro ao deletar escola." });
+  }
+
+  res.status(200).json({ message: "Escola deletada com sucesso." });
+};
+
+module.exports = { criarEscola, listarEscolas, atualizarEscola, deletarEscola };
