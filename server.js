@@ -5,13 +5,14 @@ const dotenv = require("dotenv");
 
 dotenv.config();
 const app = express();
-app.use(helmet());
+app.use(helmet()); // Segurança adicional
 app.use(cors());
 app.use(express.json());
 
 const usuarioRoutes = require("./routes/usuarioRoutes");
 const escolaRoutes = require("./routes/escolaRoutes");
 const notaRoutes = require("./routes/notaRoutes");
+
 app.use("/usuarios", usuarioRoutes);
 app.use("/escolas", escolaRoutes);
 app.use("/notas", notaRoutes);

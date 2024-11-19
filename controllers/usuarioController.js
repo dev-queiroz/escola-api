@@ -27,9 +27,7 @@ const loginUsuario = async (req, res) => {
   const token = jwt.sign(
     { id: usuario.id, papel: usuario.papel },
     process.env.JWT_SECRET,
-    {
-      expiresIn: "1h",
-    }
+    { expiresIn: "1h" }
   );
 
   res.json({ token });
@@ -47,6 +45,7 @@ const registrarUsuario = async (req, res) => {
     .select("*")
     .eq("email", email)
     .single();
+
   if (usuarioExistente) {
     return res.status(400).json({ error: "Email já cadastrado." });
   }
@@ -56,9 +55,11 @@ const registrarUsuario = async (req, res) => {
   const { error } = await supabase
     .from("usuarios")
     .insert([{ nome, email, senha: hashedPassword, papel }]);
+
   if (error) {
     return res.status(400).json({ error: "Erro ao criar usuário." });
   }
+
   res.status(201).json({ message: "Usuário criado com sucesso." });
 };
 

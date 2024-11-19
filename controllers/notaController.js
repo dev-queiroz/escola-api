@@ -23,20 +23,14 @@ const adicionarNota = async (req, res) => {
 
     const { data: aluno } = await supabase
       .from("alunos")
-      .select("usuario_id")
+      .select("email_pai")
       .eq("id", aluno_id)
       .single();
 
-    const { data: pai } = await supabase
-      .from("usuarios")
-      .select("*")
-      .eq("id", aluno.usuario_id)
-      .single();
-
     await enviarEmail(
-      pai.email,
+      aluno.email_pai,
       "Nova Nota Adicionada",
-      `Uma nova nota foi adicionada para o aluno ${aluno.nome}: ${nota}.`
+      `Uma nova nota foi adicionada para o aluno ${aluno_id}: ${nota}.`
     );
   }
 };
