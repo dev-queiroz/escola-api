@@ -10,7 +10,7 @@ const createAuthor = async (req, res) => {
 
   try {
     const { data, error } = await supabase
-      .from("Authors")
+      .from("authors")
       .insert([{ name, country, birth_date }])
       .select();
 
@@ -28,7 +28,7 @@ const createAuthor = async (req, res) => {
 const getAuthors = async (req, res) => {
   try {
     const { data, error } = await supabase
-      .from("Authors")
+      .from("authors")
       .select("id, name, country, birth_date, created_at");
 
     if (error) throw error;
@@ -45,7 +45,7 @@ const getAuthorById = async (req, res) => {
 
   try {
     const { data, error } = await supabase
-      .from("Authors")
+      .from("authors")
       .select("id, name, country, birth_date, created_at")
       .eq("id", id)
       .single();
@@ -75,7 +75,7 @@ const updateAuthor = async (req, res) => {
     );
 
     const { data, error } = await supabase
-      .from("Authors")
+      .from("authors")
       .update(updates)
       .eq("id", id)
       .select();
@@ -95,7 +95,7 @@ const deleteAuthor = async (req, res) => {
 
   try {
     const { data, error } = await supabase
-      .from("Authors")
+      .from("authors")
       .delete()
       .eq("id", id);
 

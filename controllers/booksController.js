@@ -10,7 +10,7 @@ const createBook = async (req, res) => {
 
   try {
     const { data, error } = await supabase
-      .from("Books")
+      .from("books")
       .insert([{ title, author_id, genre }])
       .select();
 
@@ -28,9 +28,9 @@ const createBook = async (req, res) => {
 const getBooks = async (req, res) => {
   try {
     const { data, error } = await supabase
-      .from("Books")
+      .from("books")
       .select(
-        "id, title, genre, available, created_at, Authors (name, country)"
+        "id, title, genre, available, created_at, authors (name, country)"
       );
 
     if (error) throw error;
@@ -47,9 +47,9 @@ const getBookById = async (req, res) => {
 
   try {
     const { data, error } = await supabase
-      .from("Books")
+      .from("books")
       .select(
-        "id, title, genre, available, created_at, Authors (name, country)"
+        "id, title, genre, available, created_at, authors (name, country)"
       )
       .eq("id", id)
       .single();
@@ -79,7 +79,7 @@ const updateBook = async (req, res) => {
     );
 
     const { data, error } = await supabase
-      .from("Books")
+      .from("books")
       .update(updates)
       .eq("id", id)
       .select();
@@ -98,7 +98,7 @@ const deleteBook = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const { data, error } = await supabase.from("Books").delete().eq("id", id);
+    const { data, error } = await supabase.from("books").delete().eq("id", id);
 
     if (error || !data.length)
       return res.status(404).json({ error: "Livro não encontrado." });

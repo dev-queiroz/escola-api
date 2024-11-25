@@ -15,7 +15,7 @@ const registerUser = async (req, res) => {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const { data, error } = await supabase
-      .from("Users")
+      .from("users")
       .insert([{ name, email, password: hashedPassword }])
       .select();
 
@@ -39,7 +39,7 @@ const loginUser = async (req, res) => {
 
   try {
     const { data, error } = await supabase
-      .from("Users")
+      .from("users")
       .select("*")
       .eq("email", email)
       .single();
@@ -67,7 +67,7 @@ const loginUser = async (req, res) => {
 const getUsers = async (req, res) => {
   try {
     const { data, error } = await supabase
-      .from("Users")
+      .from("users")
       .select("id, name, email, created_at");
 
     if (error) throw error;
@@ -84,7 +84,7 @@ const getUserById = async (req, res) => {
 
   try {
     const { data, error } = await supabase
-      .from("Users")
+      .from("users")
       .select("id, name, email, created_at")
       .eq("id", id)
       .single();
@@ -109,7 +109,7 @@ const updateUser = async (req, res) => {
 
   try {
     const { data, error } = await supabase
-      .from("Users")
+      .from("users")
       .update({ name, email })
       .eq("id", id)
       .select();
@@ -128,7 +128,7 @@ const deleteUser = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const { data, error } = await supabase.from("Users").delete().eq("id", id);
+    const { data, error } = await supabase.from("users").delete().eq("id", id);
 
     if (error || !data.length)
       return res.status(404).json({ error: "Usuário não encontrado." });

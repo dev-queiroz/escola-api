@@ -11,7 +11,7 @@ const createLoan = async (req, res) => {
   try {
     // Verificar se o livro está disponível
     const { data: book, error: bookError } = await supabase
-      .from("Books")
+      .from("books")
       .select("available")
       .eq("id", book_id)
       .single();
@@ -23,14 +23,14 @@ const createLoan = async (req, res) => {
 
     // Registrar o empréstimo
     const { data, error } = await supabase
-      .from("Loans")
+      .from("loans")
       .insert([{ user_id, book_id, due_date }])
       .select();
 
     if (error) throw error;
 
     // Atualizar a disponibilidade do livro
-    await supabase.from("Books").update({ available: false }).eq("id", book_id);
+    await supabase.from("books").update({ available: false }).eq("id", book_id);
 
     res
       .status(201)
@@ -44,9 +44,9 @@ const createLoan = async (req, res) => {
 const getLoans = async (req, res) => {
   try {
     const { data, error } = await supabase
-      .from("Loans")
+      .from("loans")
       .select(
-        "id, due_date, returned, created_at, Users (name, email), Books (title, genre)"
+        "id, due_date, returned, created_at, users (name, email), books (title, genre)"
       );
 
     if (error) throw error;
@@ -63,9 +63,9 @@ const getLoanById = async (req, res) => {
 
   try {
     const { data, error } = await supabase
-      .from("Loans")
+      .from("loans")
       .select(
-        "id, due_date, returned, created_at, Users (name, email), Books (title, genre)"
+        "id, due_date, returned, created_at, users (name, email), books (title, genre)"
       )
       .eq("id", id)
       .single();
@@ -86,7 +86,7 @@ const returnLoan = async (req, res) => {
   try {
     // Atualizar o status do empréstimo
     const { data: loan, error: loanError } = await supabase
-      .from("Loans")
+      .from("loans")
       .update({ returned: true })
       .eq("id", id)
       .select()
@@ -97,7 +97,7 @@ const returnLoan = async (req, res) => {
 
     // Atualizar a disponibilidade do livro
     await supabase
-      .from("Books")
+      .from("books")
       .update({ available: true })
       .eq("id", loan.book_id);
 
@@ -113,7 +113,7 @@ const deleteLoan = async (req, res) => {
 
   try {
     const { data: loan, error: loanError } = await supabase
-      .from("Loans")
+      .from("loans")
       .delete()
       .eq("id", id)
       .select()
@@ -125,7 +125,7 @@ const deleteLoan = async (req, res) => {
     // Atualizar a disponibilidade do livro caso não tenha sido devolvido
     if (!loan.returned) {
       await supabase
-        .from("Books")
+        .from("books")
         .update({ available: true })
         .eq("id", loan.book_id);
     }
