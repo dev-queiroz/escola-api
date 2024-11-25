@@ -1,5 +1,5 @@
 const supabase = require("../config/supabaseClient");
-const { serviceSchema } = require("../validations/service Validation");
+const { serviceSchema } = require("../validations/serviceValidation");
 
 exports.createService = async (req, res) => {
   try {
