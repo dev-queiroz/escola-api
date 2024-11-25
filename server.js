@@ -1,23 +1,30 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
-const bodyParser = require("body-parser");
-const serviceRoutes = require("./routes/serviceRoutes");
-const appointmentRoutes = require("./routes/appointmentRoutes");
-const providerRoutes = require("./routes/providerRoutes");
-const errorMiddleware = require("./middlewares/errorMiddleware");
+const usersRoutes = require("./routes/usersRoutes");
+const authorsRoutes = require("./routes/authorsRoutes");
+const booksRoutes = require("./routes/booksRoutes");
+const loansRoutes = require("./routes/loansRoutes");
 
 const app = express();
-const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(bodyParser.json());
+app.use(express.json());
 
-app.use("/api", serviceRoutes);
-app.use("/api", appointmentRoutes);
-app.use("/api", providerRoutes);
+app.use("/api/users", usersRoutes);
+app.use("/api/authors", authorsRoutes);
+app.use("/api/books", booksRoutes);
+app.use("/api/loans", loansRoutes);
 
-app.use(errorMiddleware);
+app.use((req, res, next) => {
+  res.status(404).json({ error: "Rota não encontrada." });
+});
 
+app.get("/", (req, res) => {
+  res.status(201).send("Hello World!")
+})
+
+const PORT = process.env.PORT || 3000 || 10000;
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
