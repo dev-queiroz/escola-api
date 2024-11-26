@@ -4,8 +4,8 @@ const supabase = require("../models/supabase");
 const createAuthor = async (req, res) => {
   const { name, country, birth_date } = req.body;
 
-  if (!name || !country || !birth_date) {
-    return res.status(400).json({ error: "Todos os campos são obrigatórios." });
+  if (!name || !country) {
+    return res.status(400).json({ error: "Nome e país são obrigatórios." });
   }
 
   try {
