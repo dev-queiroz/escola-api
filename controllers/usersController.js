@@ -101,16 +101,16 @@ const getUserById = async (req, res) => {
 // Atualizar usuário
 const updateUser = async (req, res) => {
   const { id } = req.params;
-  const { name, email } = req.body;
+  const { name, email, password } = req.body;
 
-  if (!name && !email) {
+  if (!name && !email && !password) {
     return res.status(400).json({ error: "Nada para atualizar." });
   }
 
   try {
     const { data, error } = await supabase
       .from("users")
-      .update({ name, email })
+      .update({ name, email, password })
       .eq("id", id)
       .select();
 
@@ -128,7 +128,10 @@ const deleteUser = async (req, res) => {
   const { id } = req.params;
 
   try {
-    const { data, error } = await supabase.from("users").delete().eq("id", id);
+    const { data, error } = await supabase
+      .from("users")
+      .delete("*")
+      .eq("id", id);
 
     if (error || !data.length)
       return res.status(404).json({ error: "Usuário não encontrado." });

@@ -3,8 +3,6 @@ const express = require("express");
 const cors = require("cors");
 const usersRoutes = require("./routes/usersRoutes");
 const authorsRoutes = require("./routes/authorsRoutes");
-const booksRoutes = require("./routes/booksRoutes");
-const loansRoutes = require("./routes/loansRoutes");
 
 const app = express();
 
@@ -13,8 +11,6 @@ app.use(express.json());
 
 app.use("/api/users", usersRoutes);
 app.use("/api/authors", authorsRoutes);
-app.use("/api/books", booksRoutes);
-app.use("/api/loans", loansRoutes);
 
 app.use((req, res, next) => {
   res.status(404).json({ error: "Rota não encontrada." });

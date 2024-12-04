@@ -2,7 +2,7 @@ const supabase = require("../models/supabase");
 
 // Criar um autor
 const createAuthor = async (req, res) => {
-  const { name, country, birth_date } = req.body;
+  const { name, country } = req.body;
 
   if (!name || !country) {
     return res.status(400).json({ error: "Nome e país são obrigatórios." });
@@ -11,7 +11,7 @@ const createAuthor = async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("authors")
-      .insert([{ name, country, birth_date }])
+      .insert([{ name, country }])
       .select();
 
     if (error) throw error;
@@ -29,7 +29,7 @@ const getAuthors = async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("authors")
-      .select("id, name, country, birth_date, created_at");
+      .select("id, name, country, created_at");
 
     if (error) throw error;
 
@@ -46,7 +46,7 @@ const getAuthorById = async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("authors")
-      .select("id, name, country, birth_date, created_at")
+      .select("id, name, country, created_at")
       .eq("id", id)
       .single();
 
@@ -62,14 +62,14 @@ const getAuthorById = async (req, res) => {
 // Atualizar um autor
 const updateAuthor = async (req, res) => {
   const { id } = req.params;
-  const { name, country, birth_date } = req.body;
+  const { name, country } = req.body;
 
-  if (!name && !country && !birth_date) {
+  if (!name && !country) {
     return res.status(400).json({ error: "Nada para atualizar." });
   }
 
   try {
-    const updates = { name, country, birth_date };
+    const updates = { name, country };
     Object.keys(updates).forEach(
       (key) => updates[key] === undefined && delete updates[key]
     );
@@ -96,7 +96,7 @@ const deleteAuthor = async (req, res) => {
   try {
     const { data, error } = await supabase
       .from("authors")
-      .delete()
+      .delete("*")
       .eq("id", id);
 
     if (error || !data.length)
